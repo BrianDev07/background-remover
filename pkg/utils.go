@@ -15,7 +15,7 @@ import (
 func GetFiles(path string) []fs.DirEntry {
 	entries, err := os.ReadDir(path)
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 
 	return entries
@@ -28,13 +28,13 @@ func SaveImageToFile(file fs.DirEntry, canvas *image.RGBA, outFolder string) {
 
 	outFile, err := os.Create(path)
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 
 	defer outFile.Close()
 
 	if encError := png.Encode(outFile, canvas); encError != nil {
-		panic(encError.Error())
+		panic(encError)
 	}
 }
 
@@ -43,7 +43,7 @@ func SaveImageToFile(file fs.DirEntry, canvas *image.RGBA, outFolder string) {
 func Transform(baseImage *os.File, file fs.DirEntry, threshold uint8, mode interface{}) *image.RGBA {
 	imageData, _, err := image.Decode(baseImage)
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 
 	// creating a new image so the original one is not modified
@@ -84,7 +84,7 @@ func setAlpha(canvas *image.RGBA, threshold uint8, luminance uint8, x int, y int
 
 	r, g, b, _ := uint32(0), uint32(0), uint32(0), uint32(0)
 	if mode == "rainbow" {
-		r, g, b, _ = oldPixel.RGBA()
+		r, g, b, _ = oldPixel.RGBA() // bug turned feature
 	}
 
 	canvas.SetRGBA(x, y, color.RGBA{uint8(r), uint8(g), uint8(b), uint8(255)})

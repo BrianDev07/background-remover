@@ -23,7 +23,7 @@ func main() {
 		path := fmt.Sprintf("%s/%s", imageFolder, file.Name())
 		baseImage, err := os.Open(path)
 		if err != nil {
-			panic(err.Error())
+			panic(err)
 		}
 
 		defer baseImage.Close()
