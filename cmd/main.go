@@ -28,7 +28,8 @@ func main() {
 
 		defer baseImage.Close()
 
-		noBackgroundImage := utilities.Transform(baseImage, file, threshold, nil)
+		//noBackgroundImage := utilities.Transform(baseImage, file, threshold, nil)
+		noBackgroundImage := utilities.Transform(baseImage, file, threshold, "keep")
 		utilities.SaveImageToFile(file, noBackgroundImage, outFolder)
 	}
 }

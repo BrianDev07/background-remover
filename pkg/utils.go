@@ -83,9 +83,6 @@ func setAlpha(canvas *image.RGBA, threshold uint8, luminance uint8, x int, y int
 	}
 
 	r, g, b, _ := uint32(0), uint32(0), uint32(0), uint32(0)
-	if mode == "rainbow" {
-		r, g, b, _ = oldPixel.RGBA() // bug turned feature
-	}
 
 	canvas.SetRGBA(x, y, color.RGBA{uint8(r), uint8(g), uint8(b), uint8(255)})
 }
