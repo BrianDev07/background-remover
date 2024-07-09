@@ -82,7 +82,5 @@ func setAlpha(canvas *image.RGBA, threshold uint8, luminance uint8, x int, y int
 		return
 	}
 
-	r, g, b, _ := uint32(0), uint32(0), uint32(0), uint32(0)
-
-	canvas.SetRGBA(x, y, color.RGBA{uint8(r), uint8(g), uint8(b), uint8(255)})
+	canvas.SetRGBA(x, y, color.RGBA{0, 0, 0, 255})
 }
