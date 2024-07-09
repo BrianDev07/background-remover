@@ -51,8 +51,8 @@ func Transform(baseImage *os.File, threshold uint8, mode interface{}) *image.RGB
 	canvas := image.NewRGBA(rectangle) // foundation for the new image
 
 	// applies changes pixel by pixel
-	for x := 0; x < rectangle.Max.X; x++ {
-		for y := 0; y < rectangle.Max.Y; y++ {
+	for x := 0; x < rectangle.Dx(); x++ {
+		for y := 0; y < rectangle.Dy(); y++ {
 			oldPixel := imageData.At(x, y)
 			r, g, b, _ := oldPixel.RGBA() // 16 bit RGBA values (0-65535)
 
@@ -71,9 +71,8 @@ func Transform(baseImage *os.File, threshold uint8, mode interface{}) *image.RGB
 // when luminance < threshold, the alpha channel is set to 255, making said pixel fully opaque;
 // in contrast, when luminance > threshold, alpha is then set to 0, thus turning the pixel transparent.
 func setAlpha(canvas *image.RGBA, threshold uint8, luminance uint8, x int, y int, oldPixel color.Color, mode interface{}) {
-
 	if luminance > threshold {
-		canvas.SetRGBA(x, y, color.RGBA{uint8(255), uint8(255), uint8(255), uint8(0)})
+		canvas.SetRGBA(x, y, color.RGBA{255, 255, 255, 0})
 		return
 	}
 
