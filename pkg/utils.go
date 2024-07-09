@@ -40,7 +40,7 @@ func SaveImageToFile(file fs.DirEntry, canvas *image.RGBA, outFolder string) {
 
 // Transforms an image based on the mode parameter. In every case, all pixels with a computed
 // luminance value above the given threshold are turned transparent.
-func Transform(baseImage *os.File, file fs.DirEntry, threshold uint8, mode interface{}) *image.RGBA {
+func Transform(baseImage *os.File, threshold uint8, mode interface{}) *image.RGBA {
 	imageData, _, err := image.Decode(baseImage)
 	if err != nil {
 		panic(err)
