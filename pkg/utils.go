@@ -22,7 +22,7 @@ func GetFiles(path string) []fs.DirEntry {
 }
 
 // Creates a new png image with data from the canvas and stores it in outFolder.
-func SaveImageToFile(file fs.DirEntry, canvas *image.RGBA, outFolder string) {
+func SaveImageToFile(file fs.FileInfo, canvas *image.RGBA, outFolder string) {
 	nameNoExtension := strings.Split(file.Name(), ".")[0]
 	path := fmt.Sprintf("%s/%s-no-bg.%s", outFolder, nameNoExtension, "png")
 
