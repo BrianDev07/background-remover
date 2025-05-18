@@ -6,7 +6,6 @@ import (
 	"io/fs"
 	"log"
 	"os"
-	"runtime"
 	"strings"
 
 	"github.com/ncruces/zenity"
@@ -20,19 +19,11 @@ type CustomFile struct {
 var (
 	inputFiles []CustomFile
 	mode       bool
-	separator  string
 )
 
 const threshold = uint8(128)
 
 func init() {
-
-	// Set separator according to OS
-	if runtime.GOOS == "windows" {
-		separator = "\\"
-	} else {
-		separator = "/"
-	}
 
 	// Obtain file paths with a selection window
 	paths, err := zenity.SelectFileMultiple()
@@ -89,6 +80,7 @@ func main() {
 	}
 }
 
+// Get parent folder by removing the filename from the absoulte path
 func getFileParent(file CustomFile) string {
 	return strings.Replace(file.path, file.cFile.Name(), "", 1)
 }
