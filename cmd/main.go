@@ -2,7 +2,6 @@ package main
 
 import (
 	utilities "background-remover/pkg"
-	"fmt"
 	"io/fs"
 	"log"
 	"os"
@@ -41,7 +40,6 @@ func init() {
 			cFile: fileAsFileInfo,
 			path:  path,
 		}
-		fmt.Println(customFile)
 
 		inputFiles = append(inputFiles, customFile)
 	}
