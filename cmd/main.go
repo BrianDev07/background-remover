@@ -3,43 +3,92 @@ package main
 import (
 	utilities "background-remover/pkg"
 	"fmt"
+	"io/fs"
+	"log"
 	"os"
-	"strconv"
+	"runtime"
+	"strings"
+
+	"github.com/ncruces/zenity"
 )
 
-func main() {
-	if len(os.Args) != 4 {
-		fmt.Println("Not enough arguments: <input_folder> <output_folder> <mode>")
-		os.Exit(1)
+type CustomFile struct {
+	cFile fs.FileInfo
+	path  string
+}
+
+var (
+	inputFiles []CustomFile
+	mode       bool
+	separator  string
+)
+
+const threshold = uint8(128)
+
+func init() {
+
+	// Set separator according to OS
+	if runtime.GOOS == "windows" {
+		separator = "\\"
+	} else {
+		separator = "/"
 	}
 
-	const threshold = uint8(128)
-
-	imageFolder := os.Args[1] // location of the original images
-	outFolder := os.Args[2]   // output folder for images
-
-	// controls whether the output image keeps original color or not
-	mode, err := strconv.ParseBool(os.Args[3])
+	// Obtain file paths with a selection window
+	paths, err := zenity.SelectFileMultiple()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	dirFiles := utilities.GetFiles(imageFolder)
-	if len(dirFiles) == 0 {
-		fmt.Printf("No files found in '%v'.\n", imageFolder)
-		return
-	}
-
-	for _, file := range dirFiles {
-		path := fmt.Sprintf("%s/%s", imageFolder, file.Name())
-		baseImage, err := os.Open(path)
+	for _, path := range paths {
+		fileAsFileInfo, err := os.Stat(path)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
+		}
+
+		customFile := CustomFile{
+			cFile: fileAsFileInfo,
+			path:  path,
+		}
+		fmt.Println(customFile)
+
+		inputFiles = append(inputFiles, customFile)
+	}
+
+	// Question window to change the mode of the output image
+	ans := zenity.Question(
+		"Keep original color?",
+		zenity.Title("Mode"),
+		zenity.QuestionIcon,
+		zenity.OKLabel("OK"),
+		zenity.CancelLabel("No"),
+	)
+
+	if ans == nil {
+		mode = true
+	} else {
+		mode = false
+	}
+}
+
+func main() {
+	for _, file := range inputFiles {
+		if file.cFile.IsDir() {
+			continue
+		}
+
+		baseImage, err := os.Open(file.path)
+		if err != nil {
+			log.Fatal(err)
 		}
 
 		defer baseImage.Close()
 
 		noBackgroundImage := utilities.Transform(baseImage, threshold, mode)
-		utilities.SaveImageToFile(file, noBackgroundImage, outFolder)
+		utilities.SaveImageToFile(file.cFile, noBackgroundImage, getFileParent(file))
 	}
+}
+
+func getFileParent(file CustomFile) string {
+	return strings.Replace(file.path, file.cFile.Name(), "", 1)
 }
