@@ -26,15 +26,11 @@ func init() {
 
 	// Obtain file paths with a selection window
 	paths, err := zenity.SelectFileMultiple()
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkError(err)
 
 	for _, path := range paths {
 		fileAsFileInfo, err := os.Stat(path)
-		if err != nil {
-			log.Fatal(err)
-		}
+		checkError(err)
 
 		customFile := CustomFile{
 			cFile: fileAsFileInfo,
@@ -67,13 +63,13 @@ func main() {
 		}
 
 		baseImage, err := os.Open(file.path)
-		if err != nil {
-			log.Fatal(err)
-		}
+		checkError(err)
 
 		defer baseImage.Close()
 
-		noBackgroundImage := utilities.Transform(baseImage, threshold, mode)
+		noBackgroundImage, err := utilities.Transform(baseImage, threshold, mode)
+		checkError(err)
+
 		utilities.SaveImageToFile(file.cFile, noBackgroundImage, getFileParent(file))
 	}
 }
@@ -81,4 +77,18 @@ func main() {
 // Get parent folder by removing the filename from the absoulte path
 func getFileParent(file CustomFile) string {
 	return strings.Replace(file.path, file.cFile.Name(), "", 1)
+}
+
+// Generate an error window if the error value is not nil
+func checkError(e error) {
+	if e != nil {
+		zenity.Error(
+			e.Error(),
+			zenity.Title("Error"),
+			zenity.ErrorIcon,
+			zenity.OKLabel("OK"),
+		)
+
+		log.Fatalln(e)
+	}
 }
