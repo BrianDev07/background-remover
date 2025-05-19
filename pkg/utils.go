@@ -11,16 +11,6 @@ import (
 	"strings"
 )
 
-// Obtains a list of files inside of the given path.
-func GetFiles(path string) []fs.DirEntry {
-	entries, err := os.ReadDir(path)
-	if err != nil {
-		panic(err)
-	}
-
-	return entries
-}
-
 // Creates a new png image with data from the canvas and stores it in outFolder.
 func SaveImageToFile(file fs.FileInfo, canvas *image.RGBA, outFolder string) {
 	nameNoExtension := strings.Split(file.Name(), ".")[0]
