@@ -14,7 +14,7 @@ import (
 // Creates a new png image with data from the canvas and stores it in outFolder.
 func SaveImageToFile(file fs.FileInfo, canvas *image.RGBA, outFolder string) {
 	nameNoExtension := strings.Split(file.Name(), ".")[0]
-	path := fmt.Sprintf("%s/%s-no-bg.%s", outFolder, nameNoExtension, "png")
+	path := fmt.Sprintf("%s%s-no-bg.%s", outFolder, nameNoExtension, "png")
 
 	outFile, err := os.Create(path)
 	if err != nil {
@@ -26,6 +26,8 @@ func SaveImageToFile(file fs.FileInfo, canvas *image.RGBA, outFolder string) {
 	if encError := png.Encode(outFile, canvas); encError != nil {
 		panic(encError)
 	}
+
+	fmt.Printf("Image saved to %v\n", path)
 }
 
 // Transforms an image based on the mode parameter. Pixels with a computed
